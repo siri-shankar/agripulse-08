@@ -28,9 +28,11 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
+        working-directory: Desktop/agripulse-08-main
         run: npm ci
 
       - name: Build
+        working-directory: Desktop/agripulse-08-main
         run: npm run build
 
       - name: Setup Pages
@@ -39,7 +41,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "./dist"
+          path: "./Desktop/agripulse-08-main/dist"
 
   deploy:
     environment:
