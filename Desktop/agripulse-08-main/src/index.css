@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    --background: 90 20% 98%;
+    --foreground: 150 25% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 150 25% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 150 25% 12%;
+
+    --primary: 152 60% 36%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 140 25% 94%;
+    --secondary-foreground: 150 20% 30%;
+
+    --muted: 140 15% 92%;
+    --muted-foreground: 150 10% 45%;
+
+    --accent: 38 92% 50%;
+    --accent-foreground: 38 90% 15%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 140 15% 88%;
+    --input: 140 15% 88%;
+    --ring: 152 60% 36%;
+
+    --radius: 0.75rem;
+
+    --agri-green: 152 60% 36%;
+    --agri-green-light: 152 55% 50%;
+    --agri-green-pale: 140 40% 95%;
+    --agri-gold: 38 92% 50%;
+    --agri-gold-pale: 42 100% 95%;
+    --agri-red: 0 72% 51%;
+    --agri-red-pale: 0 80% 96%;
+    --agri-cyan: 190 70% 42%;
+    --agri-emerald: 160 84% 39%;
+    --agri-lime: 84 78% 44%;
+    --agri-amber: 32 95% 44%;
+    --agri-teal: 172 66% 50%;
+
+    --gradient-hero: linear-gradient(135deg, hsl(152 60% 36%) 0%, hsl(160 84% 39%) 40%, hsl(84 78% 44%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(140 40% 97%) 100%);
+
+    --sidebar-background: 140 30% 97%;
+    --sidebar-foreground: 150 20% 25%;
+    --sidebar-primary: 152 60% 36%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 140 25% 94%;
+    --sidebar-accent-foreground: 152 40% 30%;
+    --sidebar-border: 140 15% 88%;
+    --sidebar-ring: 152 60% 36%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'DM Sans', sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', sans-serif;
+  }
+}
+
+/* Bounce animation for icons */
+@keyframes bounce-gentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-8deg); }
+  75% { transform: rotate(8deg); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  33% { transform: translateY(-6px) rotate(2deg); }
+  66% { transform: translateY(-3px) rotate(-1deg); }
+}
+@keyframes pulse-scale {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-bounce-gentle { animation: bounce-gentle 2s ease-in-out infinite; }
+.animate-wiggle { animation: wiggle 1.5s ease-in-out infinite; }
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-pulse-scale { animation: pulse-scale 2s ease-in-out infinite; }
+.animate-spin-slow { animation: spin-slow 8s linear infinite; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: hsl(140 15% 92%); }
+::-webkit-scrollbar-thumb { background: hsl(152 60% 36%); border-radius: 4px; }
