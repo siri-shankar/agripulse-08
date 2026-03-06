@@ -50,18 +50,17 @@ const Index = () => {
 
   const reAnalyze = useCallback((newCrop: CropType) => {
     setCrop(newCrop);
-    if (!results) return;
-    // Re-derive from existing data
-    setResults((prev) =>
-      prev?.map((r) => analyzeRow({
+    setResults((prev) => {
+      if (!prev) return null;
+      return prev.map((r) => analyzeRow({
         soil_id: r.soil_id,
         nitrogen: r.deficiencies.nitrogen.value,
         phosphorus: r.deficiencies.phosphorus.value,
         potassium: r.deficiencies.potassium.value,
         ph: r.ph,
-      }, newCrop)) || null
-    );
-  }, [results]);
+      }, newCrop));
+    });
+  }, []);
 
   const filtered = results
     ? filter === "All" ? results : results.filter((r) => r.health_status === filter)
