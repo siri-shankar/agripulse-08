@@ -1,7 +1,11 @@
 import { useState, useCallback } from "react";
 import Papa from "papaparse";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, Download, Filter } from "lucide-react";
+import {
+  Upload, Download, Wheat, Sprout, BarChart3, FileSpreadsheet,
+  Leaf, Beaker, ChevronDown, FileJson, TrendingUp, AlertCircle,
+  CheckCircle2, XOctagon, HelpCircle, Activity, Sparkles, Sun
+} from "lucide-react";
 import {
   analyzeRow, SoilSample, CropType, AnalysisResult,
   CROP_PH_RANGES, CROP_CRITICAL_RULES, CROP_EMOJIS, HealthStatus,
@@ -93,40 +97,83 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col lg:flex-row">
       {/* Sidebar */}
-      <aside className="w-full lg:w-72 lg:min-h-screen bg-card border-b lg:border-b-0 lg:border-r border-border p-5 shrink-0">
-        <h2 className="text-lg font-display font-bold text-primary mb-1">⚙️ Controls</h2>
-        <hr className="border-border mb-4" />
-
-        <label className="text-sm font-bold text-primary mb-1 block">🌿 Select Your Crop</label>
-        <select
-          value={crop}
-          onChange={(e) => reAnalyze(e.target.value as CropType)}
-          className="w-full bg-secondary border-2 border-primary rounded-lg px-3 py-2 text-foreground font-semibold mb-4 focus:outline-none focus:ring-2 focus:ring-primary"
-        >
-          {CROPS.map((c) => <option key={c} value={c}>{CROP_EMOJIS[c]} {c}</option>)}
-        </select>
-
-        <div className="bg-secondary border-2 border-primary rounded-xl p-4 mb-4">
-          <p className="font-extrabold text-primary text-sm mb-2">{CROP_EMOJIS[crop]} {crop} — Crop Profile</p>
-          <p className="text-xs text-secondary-foreground">🧪 <strong className="text-accent">Ideal pH:</strong> {phMin} – {phMax}</p>
-          <p className="text-xs text-secondary-foreground">⚡ <strong className="text-accent">Critical:</strong> {critLabel} &gt; {critThresh}</p>
+      <aside className="w-full lg:w-80 lg:min-h-screen bg-card border-b lg:border-b-0 lg:border-r border-border p-6 shrink-0">
+        <div className="flex items-center gap-3 mb-6">
+          <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }}
+            className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-glow-green">
+            <Sprout className="w-5 h-5 text-primary-foreground" />
+          </motion.div>
+          <div>
+            <h2 className="text-lg font-display font-bold text-foreground">AgriPulse</h2>
+            <p className="text-xs text-muted-foreground">Soil Analyzer v1.0</p>
+          </div>
         </div>
 
-        <hr className="border-border mb-4" />
+        <hr className="border-border mb-5" />
 
-        <label className="text-sm font-bold text-primary mb-1 block">📂 Upload Soil CSV</label>
-        <label className="flex items-center justify-center gap-2 w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl py-2.5 cursor-pointer transition-colors text-sm">
+        <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5 block">
+          <Wheat className="w-3.5 h-3.5 animate-wiggle" /> Select Crop
+        </label>
+        <div className="grid grid-cols-2 gap-2 mb-5">
+          {CROPS.map((c) => (
+            <motion.button key={c} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+              onClick={() => reAnalyze(c)}
+              className={`px-3 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-1.5 ${
+                crop === c
+                  ? "bg-primary text-primary-foreground shadow-glow-green"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+              }`}
+            >
+              <span className="text-base">{CROP_EMOJIS[c]}</span> {c.charAt(0) + c.slice(1).toLowerCase()}
+            </motion.button>
+          ))}
+        </div>
+
+        {/* Crop profile */}
+        <motion.div layout className="bg-muted/50 rounded-xl p-4 mb-5 border border-border/50">
+          <p className="font-bold text-sm text-foreground mb-3 flex items-center gap-2">
+            <Sun className="w-4 h-4 text-agri-gold animate-spin-slow" />
+            {CROP_EMOJIS[crop]} {crop.charAt(0) + crop.slice(1).toLowerCase()} Profile
+          </p>
+          <div className="space-y-2">
+            <div className="flex justify-between text-xs">
+              <span className="text-muted-foreground">Ideal pH</span>
+              <span className="font-bold text-foreground">{phMin} – {phMax}</span>
+            </div>
+            <div className="flex justify-between text-xs">
+              <span className="text-muted-foreground">Critical Nutrient</span>
+              <span className="font-bold text-foreground">{critLabel} &gt; {critThresh}</span>
+            </div>
+          </div>
+        </motion.div>
+
+        <hr className="border-border mb-5" />
+
+        {/* Upload */}
+        <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5 block">
+          <FileSpreadsheet className="w-3.5 h-3.5 animate-bounce-gentle" /> Upload CSV
+        </label>
+        <motion.label whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+          className="flex items-center justify-center gap-2 w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl py-3 cursor-pointer transition-colors text-sm shadow-glow-green">
           <Upload className="w-4 h-4" /> Choose File
           <input type="file" accept=".csv" onChange={handleFile} className="hidden" />
-        </label>
-        {fileName && <p className="text-xs text-muted-foreground mt-1 truncate">📄 {fileName}</p>}
+        </motion.label>
+        {fileName && (
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs text-muted-foreground mt-2 truncate flex items-center gap-1">
+            <FileSpreadsheet className="w-3 h-3" /> {fileName}
+          </motion.p>
+        )}
 
-        <hr className="border-border my-4" />
-        <p className="text-xs font-bold text-primary mb-1">📋 Required CSV Format:</p>
-        <pre className="bg-secondary text-agri-cyan text-xs rounded-lg p-2 overflow-x-auto">
-          soil_id,nitrogen,phosphorus,potassium,ph{"\n"}S01,18,12,140,6.2{"\n"}S02,35,20,180,5.3
-        </pre>
-        <p className="text-xs text-muted-foreground mt-6">AgriPulse v1.0 · Hackathon Demo 🌱</p>
+        <hr className="border-border my-5" />
+
+        <div className="bg-muted/30 rounded-xl p-3 border border-border/50">
+          <p className="text-xs font-bold text-muted-foreground mb-1 flex items-center gap-1">
+            <HelpCircle className="w-3 h-3" /> CSV Format
+          </p>
+          <pre className="text-[10px] text-primary font-mono leading-relaxed">
+soil_id,nitrogen,phosphorus,potassium,ph{"\n"}S01,18,12,140,6.2{"\n"}S02,35,20,180,5.3
+          </pre>
+        </div>
       </aside>
 
       {/* Main */}
@@ -135,75 +182,113 @@ const Index = () => {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-2xl p-8 lg:p-10 mb-8 border-2 border-primary"
+          className="rounded-2xl p-8 lg:p-10 mb-8 relative overflow-hidden"
           style={{ background: "var(--gradient-hero)" }}
         >
-          <h1 className="text-3xl lg:text-4xl font-display font-extrabold text-primary-foreground mb-2 drop-shadow-lg">
-            🌾 AgriPulse
-          </h1>
-          <p className="text-primary-foreground/80 text-base font-semibold">
-            AI-Powered Soil Nutrient Analyzer · Know your soil. Feed your crop. Grow more.
-          </p>
+          <div className="absolute inset-0 opacity-10">
+            {[...Array(6)].map((_, i) => (
+              <Leaf key={i} className="absolute text-primary-foreground"
+                style={{
+                  top: `${10 + i * 15}%`, left: `${60 + i * 7}%`,
+                  width: `${20 + i * 5}px`, opacity: 0.3,
+                  transform: `rotate(${i * 45}deg)`,
+                }} />
+            ))}
+          </div>
+          <div className="relative">
+            <div className="flex items-center gap-3 mb-3">
+              <motion.div animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}>
+                <Sparkles className="w-8 h-8 text-primary-foreground" />
+              </motion.div>
+              <h1 className="text-3xl lg:text-5xl font-display font-extrabold text-primary-foreground drop-shadow-lg">
+                AgriPulse
+              </h1>
+            </div>
+            <p className="text-primary-foreground/80 text-sm lg:text-base font-medium max-w-lg">
+              AI-Powered Soil Nutrient Analyzer — Know your soil, feed your crop, grow more.
+            </p>
+          </div>
         </motion.div>
 
         {error && (
-          <div className="bg-destructive/10 border border-destructive text-destructive rounded-xl p-4 mb-6 text-sm font-semibold">
-            ❌ {error}
-          </div>
+          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+            className="bg-agri-red-pale border border-agri-red/20 text-agri-red rounded-xl p-4 mb-6 text-sm font-semibold flex items-center gap-2">
+            <XOctagon className="w-5 h-5 animate-pulse-scale shrink-0" /> {error}
+          </motion.div>
         )}
 
         {!results ? <LandingContent /> : (
           <>
-            {/* Summary */}
-            <h2 className="text-xl font-display font-bold text-primary mb-1">
-              📋 Analysis Results — {CROP_EMOJIS[crop]} {crop}
-            </h2>
-            <p className="text-sm text-secondary-foreground mb-4">
-              <strong className="text-accent">{results.length}</strong> sample(s) from <code className="bg-secondary text-agri-cyan px-1 rounded">{fileName}</code>
-            </p>
-
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-              <MetricCard label="🌾 Crop" value={crop} />
-              <MetricCard label="📊 Avg Score" value={`${avgScore} / 100`} />
-              <MetricCard label="✅ Healthy" value={`${results.filter((r) => r.health_status === "Healthy").length} / ${results.length}`} />
-              <MetricCard label="🚨 Critical" value={`${results.filter((r) => r.health_status === "Critical").length} / ${results.length}`} />
+            {/* Summary header */}
+            <div className="flex flex-wrap items-end justify-between gap-3 mb-6">
+              <div>
+                <h2 className="text-xl font-display font-bold text-foreground flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5 text-primary animate-bounce-gentle" />
+                  Analysis Results
+                </h2>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  <strong className="text-primary">{results.length}</strong> sample(s) · {CROP_EMOJIS[crop]} {crop} · <span className="text-muted-foreground">{fileName}</span>
+                </p>
+              </div>
             </div>
 
-            <hr className="border-border mb-4" />
+            {/* Metric cards */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+              <MetricCard icon={<Wheat className="w-5 h-5 text-agri-gold animate-wiggle" />} label="Crop" value={crop.charAt(0) + crop.slice(1).toLowerCase()} />
+              <MetricCard icon={<TrendingUp className="w-5 h-5 text-primary animate-bounce-gentle" />} label="Avg Score" value={`${avgScore}/100`} />
+              <MetricCard icon={<CheckCircle2 className="w-5 h-5 text-agri-green animate-float" />} label="Healthy"
+                value={`${results.filter((r) => r.health_status === "Healthy").length}/${results.length}`} />
+              <MetricCard icon={<AlertCircle className="w-5 h-5 text-agri-red animate-pulse-scale" />} label="Critical"
+                value={`${results.filter((r) => r.health_status === "Critical").length}/${results.length}`} />
+            </div>
+
+            <hr className="border-border mb-5" />
 
             {/* Filter */}
-            <h3 className="text-lg font-display font-bold text-primary mb-2">🔍 Detailed Results</h3>
-            <div className="flex flex-wrap gap-2 mb-6">
+            <div className="flex flex-wrap items-center gap-2 mb-6">
+              <Activity className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm font-semibold text-muted-foreground mr-1">Filter:</span>
               {(["All", "Healthy", "Deficient", "Critical"] as const).map((f) => (
-                <button
-                  key={f}
+                <motion.button key={f} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                   onClick={() => setFilter(f)}
-                  className={`px-4 py-1.5 rounded-full text-sm font-bold transition-all ${
-                    filter === f ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground hover:bg-muted"
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+                    filter === f
+                      ? "bg-primary text-primary-foreground shadow-glow-green"
+                      : "bg-muted text-muted-foreground hover:bg-border"
                   }`}
                 >
-                  {f === "All" ? "All" : f === "Healthy" ? "Healthy ✅" : f === "Deficient" ? "Deficient ⚠️" : "Critical 🚨"}
-                </button>
+                  {f}
+                </motion.button>
               ))}
             </div>
 
-            <AnimatePresence>
+            <AnimatePresence mode="popLayout">
               {filtered && filtered.length > 0 ? (
                 filtered.map((r, i) => <ResultCard key={r.soil_id} result={r} index={i} />)
               ) : (
-                <p className="text-muted-foreground text-sm">No samples match this filter.</p>
+                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-muted-foreground text-sm py-8 text-center">
+                  No samples match this filter.
+                </motion.p>
               )}
             </AnimatePresence>
 
             <hr className="border-border my-6" />
-            <h3 className="text-lg font-display font-bold text-primary mb-3">💾 Download Results</h3>
+
+            {/* Downloads */}
+            <h3 className="text-lg font-display font-bold text-foreground mb-3 flex items-center gap-2">
+              <Download className="w-5 h-5 text-primary animate-bounce-gentle" />
+              Download Results
+            </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <button onClick={downloadCSV} className="flex items-center justify-center gap-2 bg-primary text-primary-foreground font-bold rounded-xl py-3 hover:bg-primary/90 transition-colors">
-                <Download className="w-4 h-4" /> Download Summary CSV
-              </button>
-              <button onClick={downloadJSON} className="flex items-center justify-center gap-2 bg-primary text-primary-foreground font-bold rounded-xl py-3 hover:bg-primary/90 transition-colors">
-                <Download className="w-4 h-4" /> Download Full JSON
-              </button>
+              <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={downloadCSV}
+                className="flex items-center justify-center gap-2 bg-primary text-primary-foreground font-bold rounded-xl py-3.5 hover:bg-primary/90 transition-colors shadow-glow-green">
+                <FileSpreadsheet className="w-4 h-4" /> Download CSV
+              </motion.button>
+              <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={downloadJSON}
+                className="flex items-center justify-center gap-2 bg-foreground/10 text-foreground font-bold rounded-xl py-3.5 hover:bg-foreground/15 transition-colors border border-border">
+                <FileJson className="w-4 h-4" /> Download JSON
+              </motion.button>
             </div>
           </>
         )}
@@ -212,71 +297,106 @@ const Index = () => {
   );
 };
 
-function MetricCard({ label, value }: { label: string; value: string }) {
+function MetricCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="bg-secondary border-2 border-primary rounded-xl p-4">
-      <p className="text-xs font-bold text-primary mb-1">{label}</p>
-      <p className="text-lg font-extrabold text-foreground">{value}</p>
-    </div>
+    <motion.div whileHover={{ y: -2, scale: 1.02 }}
+      className="bg-card rounded-xl p-4 border border-border/50 shadow-card hover:shadow-card-hover transition-all">
+      <div className="flex items-center gap-2 mb-1">
+        {icon}
+        <p className="text-xs font-semibold text-muted-foreground">{label}</p>
+      </div>
+      <p className="text-xl font-display font-extrabold text-foreground">{value}</p>
+    </motion.div>
   );
 }
 
 function LandingContent() {
   const steps = [
-    { icon: "📂", title: "Step 1 — Upload CSV", desc: "Upload your soil test file with soil_id, nitrogen, phosphorus, potassium, ph", border: "border-agri-green", bg: "bg-agri-green/5" },
-    { icon: "🌿", title: "Step 2 — Select Crop", desc: "Pick Tomato, Wheat, Rice, or Maize", border: "border-agri-cyan", bg: "bg-agri-cyan/5" },
-    { icon: "📊", title: "Step 3 — Get Results", desc: "See your soil score, health status, and which fertilizers to apply", border: "border-agri-gold", bg: "bg-agri-gold/5" },
+    { Icon: Upload, title: "Upload CSV", desc: "Upload your soil test file with soil_id, nitrogen, phosphorus, potassium, ph", color: "text-agri-green", bg: "bg-agri-green-pale", anim: "animate-bounce-gentle" },
+    { Icon: Leaf, title: "Select Crop", desc: "Pick Tomato, Wheat, Rice, or Maize from the sidebar", color: "text-agri-cyan", bg: "bg-agri-green-pale", anim: "animate-float" },
+    { Icon: BarChart3, title: "Get Results", desc: "See suitability scores, health status, and fertilizer recommendations", color: "text-agri-gold", bg: "bg-agri-gold-pale", anim: "animate-wiggle" },
   ];
 
   return (
     <>
-      <h2 className="text-xl font-display font-bold text-primary mb-4">👈 How to Use AgriPulse</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <h2 className="text-xl font-display font-bold text-foreground mb-5 flex items-center gap-2">
+        <Sparkles className="w-5 h-5 text-primary animate-pulse-scale" />
+        How to Use AgriPulse
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
         {steps.map((s, i) => (
-          <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.15 }}
-            className={`${s.bg} border-2 ${s.border} rounded-2xl p-6 text-center`}>
-            <div className="text-4xl mb-3">{s.icon}</div>
-            <p className="font-extrabold text-sm text-foreground mb-2">{s.title}</p>
-            <p className="text-xs text-muted-foreground">{s.desc}</p>
+          <motion.div key={i} initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.15, type: "spring" }}
+            whileHover={{ y: -4, scale: 1.02 }}
+            className="bg-card border border-border/50 rounded-2xl p-6 text-center shadow-card hover:shadow-card-hover transition-all">
+            <motion.div className={`w-14 h-14 rounded-2xl ${s.bg} mx-auto mb-4 flex items-center justify-center`}>
+              <s.Icon className={`w-7 h-7 ${s.color} ${s.anim}`} />
+            </motion.div>
+            <p className="font-bold text-sm text-foreground mb-1.5">Step {i + 1}: {s.title}</p>
+            <p className="text-xs text-muted-foreground leading-relaxed">{s.desc}</p>
           </motion.div>
         ))}
       </div>
 
-      <h3 className="text-lg font-display font-bold text-primary mb-3">🚦 Health Status Guide</h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <h3 className="text-lg font-display font-bold text-foreground mb-4 flex items-center gap-2">
+        <Activity className="w-5 h-5 text-primary animate-wiggle" />
+        Health Status Guide
+      </h3>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
         {[
-          { label: "🟢 HEALTHY", range: "Score ≥ 80", desc: "Soil is in great condition.", cls: "border-agri-green bg-agri-green/5 text-agri-green" },
-          { label: "🟡 DEFICIENT", range: "Score 50–79", desc: "Some nutrients low. Apply fertilizers.", cls: "border-agri-gold bg-agri-gold/5 text-agri-gold" },
-          { label: "🔴 CRITICAL", range: "Score < 50", desc: "Multiple problems. Immediate action.", cls: "border-agri-red bg-agri-red/5 text-agri-red" },
+          { label: "Healthy", range: "Score ≥ 80", desc: "Soil is in great condition. No action needed.", Icon: CheckCircle2, color: "text-agri-green", bg: "bg-agri-green-pale", anim: "animate-bounce-gentle" },
+          { label: "Deficient", range: "Score 50–79", desc: "Some nutrients are low. Apply recommended fertilizers.", Icon: AlertCircle, color: "text-agri-amber", bg: "bg-agri-gold-pale", anim: "animate-wiggle" },
+          { label: "Critical", range: "Score < 50", desc: "Multiple problems found. Immediate action required.", Icon: XOctagon, color: "text-agri-red", bg: "bg-agri-red-pale", anim: "animate-pulse-scale" },
         ].map((h, i) => (
-          <div key={i} className={`border-2 rounded-xl p-5 text-center ${h.cls}`}>
-            <p className="font-extrabold text-base mb-1">{h.label}</p>
-            <p className="text-sm font-semibold mb-1">{h.range}</p>
+          <motion.div key={i} whileHover={{ y: -3 }}
+            className={`${h.bg} rounded-xl p-5 text-center border border-border/30 shadow-card`}>
+            <h.Icon className={`w-8 h-8 ${h.color} ${h.anim} mx-auto mb-2`} />
+            <p className={`font-extrabold text-sm ${h.color} mb-0.5`}>{h.label}</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-1">{h.range}</p>
             <p className="text-xs text-muted-foreground">{h.desc}</p>
-          </div>
+          </motion.div>
         ))}
       </div>
 
-      <h3 className="text-lg font-display font-bold text-primary mb-3">📚 Scoring Reference</h3>
+      <h3 className="text-lg font-display font-bold text-foreground mb-4 flex items-center gap-2">
+        <Beaker className="w-5 h-5 text-primary animate-float" />
+        Scoring Reference
+      </h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <RefTable title="🌱 Nutrient Thresholds" headers={["Nutrient", "Min", "Fertilizer"]}
+        <RefTable title="Nutrient Thresholds" icon={<Leaf className="w-3.5 h-3.5 text-agri-green" />}
+          headers={["Nutrient", "Min", "Fertilizer"]}
           rows={[["Nitrogen", "20", "Urea"], ["Phosphorus", "15", "DAP"], ["Potassium", "150", "MOP"]]} />
-        <RefTable title="🧪 Ideal pH per Crop" headers={["Crop", "Min", "Max"]}
+        <RefTable title="Ideal pH per Crop" icon={<Beaker className="w-3.5 h-3.5 text-agri-cyan" />}
+          headers={["Crop", "Min", "Max"]}
           rows={[["Tomato", "6.0", "7.0"], ["Wheat", "6.0", "7.5"], ["Rice", "5.0", "6.5"], ["Maize", "5.8", "7.0"]]} />
-        <RefTable title="⚖️ Penalty Points" headers={["Condition", "Penalty"]}
+        <RefTable title="Score Penalties" icon={<AlertCircle className="w-3.5 h-3.5 text-agri-red" />}
+          headers={["Condition", "Penalty"]}
           rows={[["pH out of range", "-20"], ["Each nutrient low", "-15"], ["Critical nutrient", "-10"]]} />
       </div>
     </>
   );
 }
 
-function RefTable({ title, headers, rows }: { title: string; headers: string[]; rows: string[][] }) {
+function RefTable({ title, icon, headers, rows }: { title: string; icon: React.ReactNode; headers: string[]; rows: string[][] }) {
   return (
-    <div className="bg-card border border-border rounded-xl overflow-hidden">
-      <p className="font-bold text-sm text-accent px-4 py-2 bg-secondary">{title}</p>
+    <div className="bg-card border border-border/50 rounded-xl overflow-hidden shadow-card">
+      <div className="px-4 py-2.5 bg-muted/50 border-b border-border/50 flex items-center gap-2">
+        {icon}
+        <p className="font-bold text-xs text-foreground">{title}</p>
+      </div>
       <table className="w-full text-xs">
-        <thead><tr className="border-b border-border">{headers.map((h) => <th key={h} className="px-3 py-2 text-left text-primary font-bold">{h}</th>)}</tr></thead>
-        <tbody>{rows.map((r, i) => <tr key={i} className="border-b border-border last:border-0">{r.map((c, j) => <td key={j} className="px-3 py-2 text-secondary-foreground">{c}</td>)}</tr>)}</tbody>
+        <thead>
+          <tr className="border-b border-border/50">
+            {headers.map((h) => <th key={h} className="px-3 py-2 text-left text-primary font-bold">{h}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r, i) => (
+            <tr key={i} className="border-b border-border/30 last:border-0 hover:bg-muted/30 transition-colors">
+              {r.map((c, j) => <td key={j} className="px-3 py-2 text-muted-foreground">{c}</td>)}
+            </tr>
+          ))}
+        </tbody>
       </table>
     </div>
   );
