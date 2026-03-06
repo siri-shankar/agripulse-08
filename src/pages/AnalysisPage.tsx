@@ -96,35 +96,42 @@ const AnalysisPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Crop selector - four corners concept: horizontal bar at top */}
-      <div className="sticky top-0 z-20 bg-card/95 backdrop-blur border-b border-border">
-        <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <Sprout className="w-5 h-5 text-primary animate-bounce-gentle" />
-            <span className="font-display font-bold text-foreground text-sm">AgriPulse</span>
-          </div>
-          <div className="flex items-center gap-2">
-            {CROPS.map((c) => (
-              <motion.button
-                key={c}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => changeCrop(c)}
-                className={`px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-1.5 ${
-                  crop === c
-                    ? "bg-primary text-primary-foreground shadow-glow-green"
-                    : "bg-muted text-muted-foreground hover:bg-muted/80"
-                }`}
-              >
-                <span>{CROP_EMOJIS[c]}</span>
-                {c.charAt(0) + c.slice(1).toLowerCase()}
-              </motion.button>
-            ))}
-          </div>
-          <span className="text-xs text-muted-foreground hidden md:flex items-center gap-1">
-            <FileSpreadsheet className="w-3 h-3" /> {fileName}
-          </span>
-        </div>
+      {/* Fixed circular crop icons on left and right sides */}
+      <div className="fixed left-4 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-4">
+        {CROPS.slice(0, 2).map((c) => (
+          <motion.button
+            key={c}
+            whileHover={{ scale: 1.15 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => changeCrop(c)}
+            className={`w-14 h-14 rounded-full flex flex-col items-center justify-center text-xs font-bold transition-all shadow-lg ${
+              crop === c
+                ? "bg-primary text-primary-foreground shadow-glow-green ring-2 ring-primary/30"
+                : "bg-card text-muted-foreground border border-border hover:border-primary/40"
+            }`}
+          >
+            <span className="text-xl leading-none">{CROP_EMOJIS[c]}</span>
+            <span className="text-[10px] mt-0.5">{c.charAt(0) + c.slice(1).toLowerCase()}</span>
+          </motion.button>
+        ))}
+      </div>
+      <div className="fixed right-4 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-4">
+        {CROPS.slice(2, 4).map((c) => (
+          <motion.button
+            key={c}
+            whileHover={{ scale: 1.15 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => changeCrop(c)}
+            className={`w-14 h-14 rounded-full flex flex-col items-center justify-center text-xs font-bold transition-all shadow-lg ${
+              crop === c
+                ? "bg-primary text-primary-foreground shadow-glow-green ring-2 ring-primary/30"
+                : "bg-card text-muted-foreground border border-border hover:border-primary/40"
+            }`}
+          >
+            <span className="text-xl leading-none">{CROP_EMOJIS[c]}</span>
+            <span className="text-[10px] mt-0.5">{c.charAt(0) + c.slice(1).toLowerCase()}</span>
+          </motion.button>
+        ))}
       </div>
 
       <div className="max-w-6xl mx-auto px-6 py-8">
