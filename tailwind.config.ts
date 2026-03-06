@@ -13,7 +13,7 @@ export default {
     extend: {
       fontFamily: {
         display: ["Space Grotesk", "sans-serif"],
-        body: ["Inter", "sans-serif"],
+        body: ["DM Sans", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -50,16 +50,18 @@ export default {
           foreground: "hsl(var(--card-foreground))",
         },
         agri: {
-          deep: "hsl(var(--agri-deep))",
-          surface: "hsl(var(--agri-surface))",
           green: "hsl(var(--agri-green))",
           "green-light": "hsl(var(--agri-green-light))",
           "green-pale": "hsl(var(--agri-green-pale))",
           gold: "hsl(var(--agri-gold))",
-          "gold-light": "hsl(var(--agri-gold-light))",
+          "gold-pale": "hsl(var(--agri-gold-pale))",
           red: "hsl(var(--agri-red))",
-          "red-light": "hsl(var(--agri-red-light))",
+          "red-pale": "hsl(var(--agri-red-pale))",
           cyan: "hsl(var(--agri-cyan))",
+          emerald: "hsl(var(--agri-emerald))",
+          lime: "hsl(var(--agri-lime))",
+          amber: "hsl(var(--agri-amber))",
+          teal: "hsl(var(--agri-teal))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
@@ -77,18 +79,20 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      boxShadow: {
+        "card": "0 1px 3px 0 rgb(0 0 0 / 0.05), 0 4px 20px -4px rgb(0 0 0 / 0.08)",
+        "card-hover": "0 4px 25px -4px rgb(0 0 0 / 0.12), 0 8px 30px -8px hsl(152 60% 36% / 0.15)",
+        "glow-green": "0 0 20px -4px hsl(152 60% 36% / 0.3)",
+        "glow-gold": "0 0 20px -4px hsl(38 92% 50% / 0.3)",
+        "glow-red": "0 0 20px -4px hsl(0 72% 51% / 0.3)",
+      },
       keyframes: {
         "accordion-down": { from: { height: "0" }, to: { height: "var(--radix-accordion-content-height)" } },
         "accordion-up": { from: { height: "var(--radix-accordion-content-height)" }, to: { height: "0" } },
-        "pulse-glow": {
-          "0%, 100%": { boxShadow: "0 0 8px 2px hsl(142 71% 45% / 0.3)" },
-          "50%": { boxShadow: "0 0 20px 6px hsl(142 71% 45% / 0.5)" },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "pulse-glow": "pulse-glow 2s ease-in-out infinite",
       },
     },
   },
